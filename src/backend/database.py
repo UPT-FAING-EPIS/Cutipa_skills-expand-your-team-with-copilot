@@ -35,6 +35,7 @@ initial_activities = {
     "Chess Club": {
         "description": "Learn strategies and compete in chess tournaments",
         "schedule": "Mondays and Fridays, 3:15 PM - 4:45 PM",
+        "difficulty": "Intermediate",
         "schedule_details": {
             "days": ["Monday", "Friday"],
             "start_time": "15:15",
@@ -46,6 +47,7 @@ initial_activities = {
     "Programming Class": {
         "description": "Learn programming fundamentals and build software projects",
         "schedule": "Tuesdays and Thursdays, 7:00 AM - 8:00 AM",
+        "difficulty": "Beginner",
         "schedule_details": {
             "days": ["Tuesday", "Thursday"],
             "start_time": "07:00",
@@ -68,6 +70,7 @@ initial_activities = {
     "Soccer Team": {
         "description": "Join the school soccer team and compete in matches",
         "schedule": "Tuesdays and Thursdays, 3:30 PM - 5:30 PM",
+        "difficulty": "Advanced",
         "schedule_details": {
             "days": ["Tuesday", "Thursday"],
             "start_time": "15:30",
@@ -90,6 +93,7 @@ initial_activities = {
     "Art Club": {
         "description": "Explore various art techniques and create masterpieces",
         "schedule": "Thursdays, 3:15 PM - 5:00 PM",
+        "difficulty": "Beginner",
         "schedule_details": {
             "days": ["Thursday"],
             "start_time": "15:15",
@@ -101,6 +105,7 @@ initial_activities = {
     "Drama Club": {
         "description": "Act, direct, and produce plays and performances",
         "schedule": "Mondays and Wednesdays, 3:30 PM - 5:30 PM",
+        "difficulty": "Intermediate",
         "schedule_details": {
             "days": ["Monday", "Wednesday"],
             "start_time": "15:30",
@@ -112,6 +117,7 @@ initial_activities = {
     "Math Club": {
         "description": "Solve challenging problems and prepare for math competitions",
         "schedule": "Tuesdays, 7:15 AM - 8:00 AM",
+        "difficulty": "Advanced",
         "schedule_details": {
             "days": ["Tuesday"],
             "start_time": "07:15",
@@ -131,9 +137,21 @@ initial_activities = {
         "max_participants": 12,
         "participants": ["charlotte@mergington.edu", "amelia@mergington.edu"]
     },
+    "Manga Maniacs": {
+        "description": "Dive into bold panels, dramatic plot twists, and legendary heroes - then bring those stories to life with friends.",
+        "schedule": "Tuesdays, 5:00 PM - 6:00 PM",
+        "schedule_details": {
+            "days": ["Tuesday"],
+            "start_time": "17:00",
+            "end_time": "18:00"
+        },
+        "max_participants": 25,
+        "participants": []
+    },
     "Weekend Robotics Workshop": {
         "description": "Build and program robots in our state-of-the-art workshop",
         "schedule": "Saturdays, 10:00 AM - 2:00 PM",
+        "difficulty": "Intermediate",
         "schedule_details": {
             "days": ["Saturday"],
             "start_time": "10:00",
@@ -145,6 +163,7 @@ initial_activities = {
     "Science Olympiad": {
         "description": "Weekend science competition preparation for regional and state events",
         "schedule": "Saturdays, 1:00 PM - 4:00 PM",
+        "difficulty": "Advanced",
         "schedule_details": {
             "days": ["Saturday"],
             "start_time": "13:00",
@@ -156,6 +175,7 @@ initial_activities = {
     "Sunday Chess Tournament": {
         "description": "Weekly tournament for serious chess players with rankings",
         "schedule": "Sundays, 2:00 PM - 5:00 PM",
+        "difficulty": "Advanced",
         "schedule_details": {
             "days": ["Sunday"],
             "start_time": "14:00",

@@ -14,6 +14,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const categoryFilters = document.querySelectorAll(".category-filter");
   const dayFilters = document.querySelectorAll(".day-filter");
   const timeFilters = document.querySelectorAll(".time-filter");
+  const difficultyFilters = document.querySelectorAll(".difficulty-filter");
+
+  // Theme toggle
+  const themeToggle = document.getElementById("theme-toggle");
+  const themeIcon = themeToggle?.querySelector(".theme-icon");
+  const themeLabel = themeToggle?.querySelector(".theme-label");
 
   // Authentication elements
   const loginButton = document.getElementById("login-button");
@@ -40,6 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let searchQuery = "";
   let currentDay = "";
   let currentTimeRange = "";
+  let currentDifficulty = "";
 
   // Authentication state
   let currentUser = null;
@@ -50,6 +57,66 @@ document.addEventListener("DOMContentLoaded", () => {
     afternoon: { start: "15:00", end: "18:00" }, // After school hours
     weekend: { days: ["Saturday", "Sunday"] }, // Weekend days
   };
+
+  function setTheme(theme) {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem("theme", theme);
+
+    if (themeIcon) themeIcon.textContent = theme === "dark" ? "☀️" : "🌙";
+    if (themeLabel) themeLabel.textContent = theme === "dark" ? "Light" : "Dark";
+  }
+
+  function initTheme() {
+    const savedTheme = localStorage.getItem("theme");
+    setTheme(savedTheme === "dark" ? "dark" : "light");
+  }
+
+  function slugifyActivityName(activityName) {
+    return activityName
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  }
+
+  function getActivityShareUrl(activityName) {
+    const baseUrl = `${window.location.origin}${window.location.pathname}`;
+    return `${baseUrl}#activity=${encodeURIComponent(activityName)}`;
+  }
+
+  function getActivityFromHash() {
+    const match = window.location.hash.match(/activity=([^&]+)/);
+    if (!match) return null;
+
+    try {
+      return decodeURIComponent(match[1]);
+    } catch {
+      return null;
+    }
+  }
+
+  async function shareActivity(activityName, details) {
+    const url = getActivityShareUrl(activityName);
+    const text = `${activityName}\n\n${details.description}\n\nSchedule: ${formatSchedule(
+      details
+    )}`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: activityName, text, url });
+        return;
+      } catch {
+        // Fall back to copy link
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(url);
+      showMessage("Link copied to clipboard.", "success");
+    } catch {
+      showMessage("Unable to share. Please copy the page URL manually.", "error");
+    }
+  }
 
   // Initialize filters from active elements
   function initializeFilters() {
@@ -63,6 +130,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const activeTimeFilter = document.querySelector(".time-filter.active");
     if (activeTimeFilter) {
       currentTimeRange = activeTimeFilter.dataset.time;
+    }
+
+    // Initialize difficulty filter
+    const activeDifficultyFilter = document.querySelector(
+      ".difficulty-filter.active"
+    );
+    if (activeDifficultyFilter) {
+      currentDifficulty = activeDifficultyFilter.dataset.difficulty;
     }
   }
 
@@ -437,6 +512,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
+      // Apply difficulty filter
+      if (currentDifficulty) {
+        if (currentDifficulty === "all-levels") {
+          if (details.difficulty) return;
+        } else {
+          if (details.difficulty !== currentDifficulty) return;
+        }
+      }
+
       // Apply search filter
       const searchableContent = [
         name.toLowerCase(),
@@ -470,12 +554,25 @@ document.addEventListener("DOMContentLoaded", () => {
     Object.entries(filteredActivities).forEach(([name, details]) => {
       renderActivityCard(name, details);
     });
+
+    // If a shared URL points to a specific activity, scroll to it after render
+    const activityFromHash = getActivityFromHash();
+    if (activityFromHash) {
+      const activityId = `activity-${slugifyActivityName(activityFromHash)}`;
+      const activityElement = document.getElementById(activityId);
+      if (activityElement) {
+        activityElement.classList.add("highlight");
+        activityElement.scrollIntoView({ behavior: "smooth", block: "start" });
+        setTimeout(() => activityElement.classList.remove("highlight"), 3000);
+      }
+    }
   }
 
   // Function to render a single activity card
   function renderActivityCard(name, details) {
     const activityCard = document.createElement("div");
     activityCard.className = "activity-card";
+    activityCard.id = `activity-${slugifyActivityName(name)}`;
 
     // Calculate spots and capacity
     const totalSpots = details.max_participants;
@@ -506,6 +603,14 @@ document.addEventListener("DOMContentLoaded", () => {
       </span>
     `;
 
+    const difficultyBadgeHtml = details.difficulty
+      ? `
+      <span class="difficulty-badge">
+        ${details.difficulty}
+      </span>
+    `
+      : "";
+
     // Create capacity indicator
     const capacityIndicator = `
       <div class="capacity-container ${capacityStatusClass}">
@@ -521,6 +626,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     activityCard.innerHTML = `
       ${tagHtml}
+      ${difficultyBadgeHtml}
       <h4>${name}</h4>
       <p>${details.description}</p>
       <p class="tooltip">
@@ -553,6 +659,14 @@ document.addEventListener("DOMContentLoaded", () => {
         </ul>
       </div>
       <div class="activity-card-actions">
+        <div class="share-actions">
+          <button class="share-button share-native" type="button" data-activity="${name}">
+            Share
+          </button>
+          <button class="share-button copy-link" type="button" data-activity="${name}">
+            Copy link
+          </button>
+        </div>
         ${
           currentUser
             ? `
@@ -570,6 +684,20 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       </div>
     `;
+
+    // Share buttons
+    const shareNativeButton = activityCard.querySelector(".share-native");
+    const copyLinkButton = activityCard.querySelector(".copy-link");
+
+    shareNativeButton?.addEventListener("click", () => shareActivity(name, details));
+    copyLinkButton?.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(getActivityShareUrl(name));
+        showMessage("Link copied to clipboard.", "success");
+      } catch {
+        showMessage("Unable to copy link. Please copy the page URL manually.", "error");
+      }
+    });
 
     // Add click handlers for delete buttons
     const deleteButtons = activityCard.querySelectorAll(".delete-participant");
@@ -611,6 +739,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Update current filter and display filtered activities
       currentFilter = button.dataset.category;
+      displayFilteredActivities();
+    });
+  });
+
+  // Add event listeners to difficulty filter buttons
+  difficultyFilters.forEach((button) => {
+    button.addEventListener("click", () => {
+      difficultyFilters.forEach((btn) => btn.classList.remove("active"));
+      button.classList.add("active");
+
+      currentDifficulty = button.dataset.difficulty;
       displayFilteredActivities();
     });
   });
@@ -862,6 +1001,11 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // Initialize app
+  initTheme();
+  themeToggle?.addEventListener("click", () => {
+    const currentTheme = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+    setTheme(currentTheme === "dark" ? "light" : "dark");
+  });
   checkAuthentication();
   initializeFilters();
   fetchActivities();
