@@ -32,35 +32,6 @@
   --info-light: #d1ecf1;
 }
 
-:root[data-theme="dark"] {
-  --primary: #90caf9;
-  --primary-light: #bbdefb;
-  --primary-dark: #64b5f6;
-  --primary-text: #0b1220;
-
-  --secondary: #ffb74d;
-  --secondary-light: #ffe0b2;
-  --secondary-dark: #ff9800;
-  --secondary-text: #0b1220;
-
-  --background: #0f172a;
-  --surface: #111c33;
-  --text-primary: #e5e7eb;
-  --text-secondary: #cbd5e1;
-  --border: #22304a;
-  --border-light: #1a2741;
-  --border-focus: #334766;
-
-  --success: #4ade80;
-  --success-light: rgba(74, 222, 128, 0.12);
-  --warning: #fbbf24;
-  --warning-light: rgba(251, 191, 36, 0.12);
-  --error: #f87171;
-  --error-light: rgba(248, 113, 113, 0.12);
-  --info: #38bdf8;
-  --info-light: rgba(56, 189, 248, 0.12);
-}
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -216,10 +187,7 @@ section h3 {
   margin-top: auto;
   padding-top: 10px;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
   justify-content: center;
-  align-items: center;
 }
 
 /* Activity Tag */
@@ -235,49 +203,6 @@ section h3 {
   border-radius: 10px;
   text-transform: uppercase;
   letter-spacing: 0.3px;
-}
-
-.difficulty-badge {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  background: var(--background);
-  color: var(--text-primary);
-  border: 1px solid var(--border);
-  font-size: 0.65rem;
-  font-weight: 700;
-  padding: 2px 6px;
-  border-radius: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-}
-
-.activity-card.highlight {
-  outline: 2px solid var(--secondary);
-  outline-offset: 2px;
-}
-
-.share-actions {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.share-button {
-  padding: 6px 10px;
-  border-radius: 20px;
-  border: 1px solid var(--border);
-  background-color: var(--background);
-  color: var(--text-primary);
-  cursor: pointer;
-  font-size: 0.8rem;
-}
-
-.share-button:hover {
-  background-color: var(--primary-light);
-  color: white;
 }
 
 /* Capacity Indicator */
@@ -613,7 +538,6 @@ footer {
 }
 
 .category-filters,
-.difficulty-filters,
 .day-filters,
 .time-filters {
   display: flex;
@@ -622,7 +546,6 @@ footer {
 }
 
 .category-filter,
-.difficulty-filter,
 .day-filter,
 .time-filter {
   background-color: var(--background);
@@ -636,7 +559,6 @@ footer {
 }
 
 .category-filter.active,
-.difficulty-filter.active,
 .day-filter.active,
 .time-filter.active {
   background-color: var(--primary);
@@ -645,7 +567,6 @@ footer {
 }
 
 .category-filter:hover,
-.difficulty-filter:hover,
 .day-filter:hover,
 .time-filter:hover {
   background-color: var(--primary-light);
@@ -701,7 +622,6 @@ footer {
 #user-status {
   display: flex;
   align-items: center;
-  gap: 8px;
 }
 
 #user-info {
