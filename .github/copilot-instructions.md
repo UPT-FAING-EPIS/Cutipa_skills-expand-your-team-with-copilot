@@ -8,6 +8,8 @@ Consider the following when communicating with the staff.
 
 - The staff is not technical. Explain in simple terms as much as possible and avoid software jargon.
 - Any new code must be easy to maintain and understand, without significant coding experience.
+- Prefer small, focused changes so teachers can review updates quickly.
+- Mention setup commands when they help staff or reviewers reproduce a change.
 
 ## Program architecture
 
